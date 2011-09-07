@@ -1,0 +1,56 @@
+<style type="text/css">
+.book_holder {
+	float: left;
+	width: 45%;
+}
+.header {
+	float: left;
+	width: 100%;
+}
+.loan_system_holder {
+	float: right;
+	width: 49%;
+}
+</style>
+<div class="header">
+<h1>iBooker</h1>
+<a href="/index">Back</a><br/>
+<a href="/books/edit/<?=$this->book->id;?>">Edit book</a>
+</div>
+<div class="book_holder">
+<h3><?=$this->escape($this->book->name);?></h3>
+<h5>By <?=$this->escape($this->book->author);?></h5>
+<p><?=$this->escape($this->book->description);?></p>
+<p>Date submitted: <?=$this->book->submit_date;?></p>
+</div>
+<div class="loan_system_holder">
+<h2>Loan this book</h2>
+<?php if(!$this->book->loaned_by): ?>
+    <?=$this->loan_book_form;?>
+<?php else: ?>
+    This book is currently loaned by:
+    <?=$this->escape($this->book->loaned_by) ?><br/>
+<?php endif; ?>
+<h3>Loan history</h3>
+<table border="1">
+    <tr>
+        <th>loaner name</th>
+        <th>Date loaned</th>
+        <th>Date returned</th>
+    </tr>
+<?php foreach($this->loans as $loan): ?>
+    <tr>
+        <td><?=$this->escape($loan->loaner_name);?></td>
+        <td><?=$loan->date_loaned;?></td>
+        <?php if(!$loan->date_returned): ?>
+        <td><a href="/books/return/<?=$this->book->id ?>/<?=$loan->id ?>">This books is returned</a></td>
+        <?php else: ?>
+        <td><?=$loan->date_returned;?></td>
+        <?php endif; ?>
+    </tr>
+
+
+<?php endforeach; ?>
+</table>
+</div>
+

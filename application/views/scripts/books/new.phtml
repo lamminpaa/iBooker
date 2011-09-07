@@ -1,0 +1,15 @@
+<script src="/js/jquery-1.6.2.min.js" ></script>
+<script>
+$(document).ready(function(){
+  $("a#linkHome").click(function(){$("div#content").load('index.htm #content *');});
+  $("a#linkPage2").click(function(){$("div#content").load('page2.htm #content *');});
+});
+</script>
+
+<h1>iBooker</h1>
+
+<a href="/index">Back</a><hr/>
+<h2>Add new Book to your collection</h2>
+<a id="autofill" href="#">Autofill boxes</a>
+<?php
+echo $this->form;

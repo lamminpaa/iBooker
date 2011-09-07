@@ -1,0 +1,43 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+    <head>
+        
+        <title></title>
+    </head>
+    <body>
+        <h1>Welcome to iBooker</h1>
+       
+        <a href="/login/logout">Logout</a>
+        <h2>All your books</h2>
+         <a href="/books/new">Add new book</a>
+        <table border="!">
+            <tr>
+                <td>Times loaned</td>
+                <td>ISBN</td>
+                <td>Author</td>
+                <td>Name of the book</td>
+                <td>Date submitted</td>
+                <td>Currently loaned to</td>
+
+            </tr>
+            <?php foreach ($this->allBooks as $book):?>
+            <tr>
+                <td><?=$this->escape($book->times_loaned);?></td>
+                <td>
+                    <a href="/books/show/<?=$book->id?>">
+                        <?=$book->ISBN;?>
+                    </a>
+                </td>
+                <td> <?=$this->escape($book->author);?></td>
+                <td title="<?=$this->escape($book->name);?>">
+                    
+                        <?=$this->truncate($this->escape($book->name), 0, 50, '', '...') ?>
+                    </acronym>
+                </td>
+                <td> <?=$this->escape($book->submit_date);?></td>
+               <td><?=$this->escape($book->loaned_by);?></td>
+            </tr>
+            <?php endforeach; ?>
+        </table>    
+    </body>
+</html>
