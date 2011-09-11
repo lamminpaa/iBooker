@@ -24,8 +24,8 @@ class RssController extends Zend_Controller_Action {
             'email' => 'lamminpaakm@gmail.com',
             'uri'   => 'http://www.lamminpaa.net',
         ));
-        $entry->setDateModified(time());
-        $entry->setDateCreated(time());
+       
+        $entry->setDateCreated($this->book->submit_date);
         $entry->setDescription("{$this->truncate($this->escape($book->description), 0, 50, '', '...')}");
         $entry->setContent("{$this->escape($book->description)}");
         $feed->addEntry($entry);
