@@ -32,7 +32,7 @@ class FeedController extends Zend_Controller_Action {
         $feed = new Zend_Feed_Writer_Feed();
         $feed->setTitle('Ibooker');
         $feed->setLink('http://ibooker.lamminpaa.net');
-        $feed->setFeedLink('http://ibooker.lamminpaa.net/rss', $type_text);
+        $feed->setFeedLink("http://ibooker.lamminpaa.net/feed/$type_text", $type_text);
         $feed->setDateModified(time());
 
         $feed->setDescription('Your Book Library');
@@ -42,10 +42,12 @@ class FeedController extends Zend_Controller_Action {
             $entry->setTitle("{$this->escapeRss($book->name)} ({$this->escapeRss($book->author)})");
             $entry->setLink("http://ibooker.lamminpaa.net/books/show/$book->id");
             $date = new Zend_Date($book->submit_date);
-            $entry->setDateCreated($date->get(Zend_Date::TIMESTAMP));
-            $entry->setDateModified($date->get(Zend_Date::TIMESTAMP));
+           
+            $entry->setDateCreated($date);
+            $entry->setDateModified($date);
             $entry->setId("http://ibooker.lamminpaa.net/books/show/$book->id");
-            
+           
+            $entry->addAuthor('Kalle Lamminpää', 'lamminpaakm@gmail.com');
             $entry->setDescription("{$this->truncate($this->escapeRss($book->description), 0, 50, '', '...')}");
             $entry->setContent("{$this->escapeRss($book->description)}");
             $feed->addEntry($entry);
