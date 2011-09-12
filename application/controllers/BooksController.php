@@ -19,8 +19,10 @@ class BooksController Extends Zend_Controller_Action {
 
         $book = $this->booksTable->getBook($id);
         Zend_Registry::set('book_id', $book->id);
+        $this->view->setEncoding('iso-8859-1');
         $this->view->book = $book;
         $this->view->loan_book_form = new Application_Form_LoanBook();
+        
         $this->view->loans = $this->loansTable->getLoanHistory($id);
     }
 

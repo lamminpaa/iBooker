@@ -1,6 +1,23 @@
 <?php
 class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 {
+    protected function _initDoctype()
+    {
+        $this->bootstrap('view');
+        $view = $this->getResource('view');
+        
+        $view->doctype('XHTML1_STRICT');
+        $view->headMeta()->appendHttpEquiv('Content-Type',
+                                           'text/html; charset=UTF-8')
+                         ->appendHttpEquiv('Content-Language', 'en-US');
+        
+        
+        
+        $view->headLink()->headLink(array('rel' => 'alternate',
+                                  'href' => 'http://ibooker.lamminpaa.net/rss',
+                                  'type' => 'application/rss+xml',
+                                  'title'=> 'ibooker Rss'));
+    }
     public function _initRoutes()
     {
         $front = Zend_Controller_Front::getInstance();
