@@ -14,16 +14,27 @@ class BooksController Extends Zend_Controller_Action {
     }
 
     public function showAction() {
-
         $id = (int) $this->_getParam('id');
-
         $book = $this->booksTable->getBook($id);
         Zend_Registry::set('book_id', $book->id);
-        $this->view->setEncoding('iso-8859-1');
         $this->view->book = $book;
         $this->view->loan_book_form = new Application_Form_LoanBook();
-        
         $this->view->loans = $this->loansTable->getLoanHistory($id);
+    }
+    public function barcodeAction(){
+        $id = (int) $this->_getParam('id');
+        
+        $code_params = array('text'            => "http://ibooker.lamminpaa.net/books/show/$id", 
+                             'backgroundColor' => '#FFFFFF', 
+                             'foreColor'       => '#000000', 
+                             'padding'         => 1,  //array(10,5,10,5),
+                             'moduleSize'      => 4);
+                
+        $this->_helper->layout()->disableLayout();
+        $this->_helper->viewRenderer->setNoRender(true);
+        
+        $renderer_params = array('imageType' => 'png');
+        Zend_Matrixcode::render('qrcode', $code_params, 'image', $renderer_params);
     }
 
     public function newAction() {

@@ -49,6 +49,14 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
                                                         )
                                                   );
         $router->addRoute('books_return', $route_return);
+        
+        $route_barcode = new Zend_Controller_Router_Route('/books/barcode/:id/',
+                                                  array(
+                                                      'controller' => 'books',
+                                                      'action'     => 'barcode'
+                                                        )
+                                                  );
+        $router->addRoute('books_barcode', $route_barcode);
         return $router;
     }
     
