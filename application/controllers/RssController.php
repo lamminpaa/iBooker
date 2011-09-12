@@ -6,38 +6,38 @@ class RssController extends Zend_Controller_Action {
         $feed = new Zend_Feed_Writer_Feed();
     $feed->setTitle('Ibooker');
     $feed->setLink('http://ibooker.lamminpaa.net');
+    $feed->setFeedLink('http://ibooker.lamminpaa.net/rss', 'rss');
     
     $feed->setDescription('Your Book Library');
-    $feed->addAuthor(array(
-        'name'  => 'Kalle Lamminpää',
-        'email' => 'lamminpaakm@gmail.com',
-        'uri'   => 'http://www.lamminpaa.net',
-    ));
+ 
     $feed->setDateModified(time());
+    $feed->setEncoding('iso-8859-1');
 
     foreach($bookTable->fetchAll() as $book){
         $entry = $feed->createEntry();
-        $entry->setTitle("{$this->escape($book->name)} ({$this->escape($book->author)})");
+        $entry->setTitle("{$this->escapeRss($book->name)} ({$this->escapeRss($book->author)})");
         $entry->setLink("http://ibooker.lamminpaa.net/books/show/$book->id");
-        $entry->addAuthor(array(
-            'name'  => 'Kalle Lamminpää',
-            'email' => 'lamminpaakm@gmail.com',
-            'uri'   => 'http://www.lamminpaa.net',
-        ));
+        
         $entry->setDateModified(time());
         $entry->setDateCreated(time());
-        $entry->setDescription("{$this->truncate($this->escape($book->description), 0, 50, '', '...')}");
-        $entry->setContent("{$this->escape($book->description)}");
+        $entry->setDescription("{$this->truncate($this->escapeRss($book->description), 0, 50, '', '...')}");
+        $entry->setContent("{$this->escapeRss($book->description)}");
         $feed->addEntry($entry);
         }
     $out = $feed->export('rss');
-    $this->getResponse()->setHeader('Content-Type', 'text/xml');
+    $this->getResponse()->setHeader('Content-Type', 'application/xml');
+    
+    $this->_helper->layout->disableLayout();
     $this->view->rss = $out;
     }
-       private function escape($input){
-           $input = escapeshellarg($input);
+        private function escape($input){
         return htmlspecialchars($input, ENT_QUOTES);
     }
+    private function escapeRss($input){
+        $input = preg_replace(array('/</', '/>/', '/"/'), array('&lt;', '&gt;', '&quot;'), $input);
+        return $input;
+    }
+    
     private function truncate($string, $start = 0, $length = 100, $prefix = '...', $postfix = '...')
     {
         $truncated = trim($string);

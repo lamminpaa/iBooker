@@ -15,9 +15,10 @@ class Application_Model_DbTable_Books extends Zend_Db_Table_Abstract {
     }
     public function createNewBook($form){
         unset($form['id']);
+        $date = new Zend_Date();
         $digits = new Zend_Filter_Digits;
         $form['ISBN'] = $digits->filter($form['ISBN']);
-        $form['submit_date'] = new Zend_Date();
+        $form['submit_date'] = $date->now('fi_FI');
         $newBook = $this->createRow($form);
         $newBook->save();
     }
