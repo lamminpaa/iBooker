@@ -13,7 +13,9 @@ class LoginController extends Zend_Controller_Action {
         if ($request->isPost()) {
             if ($loginForm->isValid($request->getPost())) {
                 if ($this->usersTable->authenticate($loginForm->getValues())) {
-                    $this->_redirect('/');
+                    $get_url = $_SESSION['get_url'];
+                    unset($_SESSION['get_url']);
+                    $this->_redirect($get_url);
                 } else {
                     $loginForm->setDescription("Password and username dont match");
                 }
@@ -25,6 +27,7 @@ class LoginController extends Zend_Controller_Action {
     }
 
     public function indexAction() {
+        
         $loginForm = new Application_Form_Login();
         $this->view->loginForm = $loginForm;
     }

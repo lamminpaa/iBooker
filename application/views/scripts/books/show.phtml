@@ -19,7 +19,9 @@
 </div>
 <div class="book_holder">
 <h3><?=$this->escape($this->book->name);?></h3>
-<h5>By <?=$this->escape($this->book->author);?></h5>
+<h5>By <?=$this->escape($this->book->author);?><br/>
+ISBN: <?=$this->escape($this->book->ISBN);?>
+</h5>
 <p><?=$this->escape($this->book->description);?></p>
 <p>Date submitted: <?=$this->book->submit_date;?></p>
 </div>

@@ -8,6 +8,10 @@ class Application_Plugin_AuthCheck extends Zend_Controller_Plugin_Abstract
 		
 		if(!in_array($request->getControllerName(), $publicControllers) && !Zend_Auth::getInstance()->hasIdentity())
 		{
+                    
+                    $_SESSION['get_url'] =  getenv("REQUEST_URI");
+                    
+                  
 			$request->setControllerName('login');
 			$request->setActionName('index');
 			// Set the module if you need to as well.
