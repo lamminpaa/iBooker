@@ -2,12 +2,38 @@
 
 class FeedController extends Zend_Controller_Action {
 
-    public function indexAction() {
+    public function indexAction(){
+        $this->_redirect('feed/rss');
+    }
+    public function atomAction(){
+        $atom_feed = $this->feedCreator('atom');
+         $this->getResponse()->setHeader('Content-Type', 'application/atom+xml');
+        $this->_helper->layout->disableLayout();
+       
+         
+        $this->view->feed = $atom_feed;
+        $this->render('index');
+    }
+    public function rssAction(){
+        $rss_feed = $this->feedCreator('rss');
+         $this->getResponse()->setHeader('Content-Type', 'application/xml');
+         $this->_helper->layout->disableLayout();
+        $this->view->feed = $rss_feed;
+        $this->render('index');
+    }
+    private function feedCreator($type) {
+        if($type == "atom"){
+            $type_text = "atom";
+        }
+        else if($type == "rss"){
+            $type_text = "rss";
+        }
         $bookTable = new Application_Model_DbTable_Books();
         $feed = new Zend_Feed_Writer_Feed();
         $feed->setTitle('Ibooker');
         $feed->setLink('http://ibooker.lamminpaa.net');
-        $feed->setFeedLink('http://ibooker.lamminpaa.net/rss', 'rss');
+        $feed->setFeedLink('http://ibooker.lamminpaa.net/rss', $type_text);
+        $feed->setDateModified(time());
 
         $feed->setDescription('Your Book Library');
 
@@ -17,14 +43,15 @@ class FeedController extends Zend_Controller_Action {
             $entry->setLink("http://ibooker.lamminpaa.net/books/show/$book->id");
             $date = new Zend_Date($book->submit_date);
             $entry->setDateCreated($date->get(Zend_Date::TIMESTAMP));
+            $entry->setDateModified($date->get(Zend_Date::TIMESTAMP));
+            $entry->setId("http://ibooker.lamminpaa.net/books/show/$book->id");
+            
             $entry->setDescription("{$this->truncate($this->escapeRss($book->description), 0, 50, '', '...')}");
             $entry->setContent("{$this->escapeRss($book->description)}");
             $feed->addEntry($entry);
         }
-        $out = $feed->export('rss');
-        $this->getResponse()->setHeader('Content-Type', 'application/xml');
-        $this->_helper->layout->disableLayout();
-        $this->view->rss = $out;
+        $out = $feed->export($type_text);
+        return $out;
     }
 
     private function escape($input) {

@@ -14,9 +14,13 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         
         
         $view->headLink()->headLink(array('rel' => 'alternate',
-                                  'href' => 'http://ibooker.lamminpaa.net/rss',
+                                  'href' => 'http://ibooker.lamminpaa.net/feed/rss',
                                   'type' => 'application/rss+xml',
-                                  'title'=> 'ibooker Rss'));
+                                  'title'=> 'ibooker Books Rss'))
+                         ->headLink(array('rel' => 'alternate',
+                                  'href' => 'http://ibooker.lamminpaa.net/feed/atom',
+                                  'type' => 'application/atom+xml',
+                                  'title'=> 'ibooker Books Atom'));
     }
     public function _initRoutes()
     {
