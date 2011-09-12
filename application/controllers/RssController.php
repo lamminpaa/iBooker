@@ -4,38 +4,33 @@ class RssController extends Zend_Controller_Action {
     public function indexAction() {
         $bookTable = new Application_Model_DbTable_Books();
         $feed = new Zend_Feed_Writer_Feed();
-    $feed->setTitle('Ibooker');
-    $feed->setLink('http://ibooker.lamminpaa.net');
+        $feed->setTitle('Ibooker');
+        $feed->setLink('http://ibooker.lamminpaa.net');
+        $feed->setFeedLink('http://ibooker.lamminpaa.net/rss', 'rss');
     
-    $feed->setDescription('Your Book Library');
-    $feed->addAuthor(array(
-        'name'  => 'Kalle Lamminpää',
-        'email' => 'lamminpaakm@gmail.com',
-        'uri'   => 'http://www.lamminpaa.net',
-    ));
-    $feed->setDateModified(time());
+        $feed->setDescription('Your Book Library');
+        $feed->setEncoding('UTF-8');
+        
+        
+        $feed->setDateModified(time());
 
     foreach($bookTable->fetchAll() as $book){
         $entry = $feed->createEntry();
         $entry->setTitle("{$this->escape($book->name)} ({$this->escape($book->author)})");
         $entry->setLink("http://ibooker.lamminpaa.net/books/show/$book->id");
-        $entry->addAuthor(array(
-            'name'  => 'Kalle Lamminpää',
-            'email' => 'lamminpaakm@gmail.com',
-            'uri'   => 'http://www.lamminpaa.net',
-        ));
-       
-        $entry->setDateCreated($this->book->submit_date);
+
+        $date = new Zend_Date($this->book->date_submitted, null, 'fi_FI');
+        $entry->setDateModified($date->get());
         $entry->setDescription("{$this->truncate($this->escape($book->description), 0, 50, '', '...')}");
         $entry->setContent("{$this->escape($book->description)}");
         $feed->addEntry($entry);
         }
-    $out = $feed->export('rss');
-    $this->getResponse()->setHeader('Content-Type', 'text/xml');
-    $this->view->rss = $out;
+        $out = $feed->export('rss');
+        $this->getResponse()->setHeader('Content-Type', 'text/xml');
+        $this->view->rss = $out;
     }
-       private function escape($input){
-           $input = escapeshellarg($input);
+    private function escape($input){
+        $input = escapeshellarg($input);
         return htmlspecialchars($input, ENT_QUOTES);
     }
     private function truncate($string, $start = 0, $length = 100, $prefix = '...', $postfix = '...')
